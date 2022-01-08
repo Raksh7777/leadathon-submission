@@ -3,6 +3,6 @@ const express = require("express");
 const router = express.Router();
 const { getAllMoves } = require("../controllers/index");
 
-router.route("/").get(getAllMoves);
+router.route("/:CODE?").get(getAllMoves);
 
 module.exports = router;
