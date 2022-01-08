@@ -8,17 +8,13 @@ exports.scrapeAllMoves = async () => {
     });
     let page = await browser.newPage();
 
-    await page.goto(
-      chessUrl
-      // , { timeout: 10000, waitUntil: "load" }
-    );
+    await page.goto(chessUrl);
 
     const movesList = await page.evaluate(async () => {
       let data = [];
 
       let table = document.querySelectorAll("tr");
-      console.log(typeof table);
-      console.log(table);
+
       table.forEach((obj) => {
         let currentMove = {
           id: obj.querySelector("td>font").innerText,
@@ -33,6 +29,6 @@ exports.scrapeAllMoves = async () => {
     await browser.close();
     return movesList;
   } catch (err) {
-    console.log(err);
+    return err;
   }
 };
