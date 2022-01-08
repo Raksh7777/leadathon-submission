@@ -3,28 +3,33 @@ const puppeteer = require("puppeteer");
 exports.scrapeAllMoves = async () => {
   try {
     let chessUrl = "https://www.chessgames.com/chessecohelp.html";
-    console.log("here");
-    let browser = await puppeteer.launch({ headless: false });
+    let browser = await puppeteer.launch();
     let page = await browser.newPage();
 
-    await page.goto(chessUrl);
-    await page.waitForSelector("table");
-    let data = await page.evaluate(() => {
-      let table = document.querySelector("table > tbody");
+    await page.goto(
+      chessUrl
+      // , { timeout: 10000, waitUntil: "load" }
+    );
 
-      let movesList = [];
-      //table.map((obj) => {
-      //   movesList.push({
-      //     id: obj.querySelector("tr>td>font").innerText,
-      //     name: obj.querySelector("tr>td>font>b").innerText,
-      //     sequence: querySelector("tr>td>font>font").innerText,
-      //   });
-      // });
+    const movesList = await page.evaluate(async () => {
+      let data = [];
 
-      return movesList;
+      let table = document.querySelectorAll("tr");
+      console.log(typeof table);
+      console.log(table);
+      table.forEach((obj) => {
+        let currentMove = {
+          id: obj.querySelector("td>font").innerText,
+          name: obj.querySelector("td>font>b").innerText,
+          sequence: obj.querySelector("td>font>font").innerText,
+        };
+
+        data.push(currentMove);
+      });
+      return data;
     });
-    console.log(data);
-    //await browser.close();
+    await browser.close();
+    return movesList;
   } catch (err) {
     console.log(err);
   }
